@@ -1,0 +1,24 @@
+resources:
+  schemas:
+    raw:
+      name: raw
+      catalog_name: ${var.catalog}
+
+    bronze:
+      name: bronze
+      catalog_name: ${var.catalog}
+
+    silver:
+      name: silver
+      catalog_name: ${var.catalog}
+
+    gold:
+      name: gold
+      catalog_name: ${var.catalog}
+
+  volumes:
+    landing:
+      catalog_name: ${var.catalog}
+      schema_name: ${resources.schemas.raw.name}
+      name: landing
+      volume_type: MANAGED

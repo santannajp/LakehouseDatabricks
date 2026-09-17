@@ -19,7 +19,7 @@ resources:
         - name: catalog
           default: ${var.catalog}
         - name: schema
-          default: ${var.schema}
+          default: ${resources.schemas.raw.name}
 
       tasks:
         - task_key: python_wheel_task
@@ -30,7 +30,7 @@ resources:
               - "--catalog"
               - "${var.catalog}"
               - "--schema"
-              - "${var.schema}"
+              - "${resources.schemas.raw.name}"
           environment_key: default
 
       environments:

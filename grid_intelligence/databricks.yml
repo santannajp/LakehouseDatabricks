@@ -4,6 +4,9 @@ bundle:
   name: grid_intelligence
   uuid: 8413eddf-a82e-4685-a133-9b761e18fc0a
 
+experimental:
+  skip_name_prefix_for_schema: true
+
 include:
   - resources/*.yml
 
@@ -16,8 +19,6 @@ artifacts:
 variables:
   catalog:
     description: The catalog to use
-  schema:
-    description: The schema to use
 
 targets:
   dev:
@@ -30,8 +31,7 @@ targets:
     workspace:
       host: https://dbc-7a6349ec-d685.cloud.databricks.com
     variables:
-      catalog: workspace
-      schema: ${workspace.current_user.short_name}
+      catalog: grid_dev
   prod:
     mode: production
     workspace:
@@ -39,8 +39,7 @@ targets:
       # We explicitly deploy to /Workspace/Users/santannajp@gmail.com to make sure we only have a single copy.
       root_path: /Workspace/Users/santannajp@gmail.com/.bundle/${bundle.name}/${bundle.target}
     variables:
-      catalog: workspace
-      schema: prod
+      catalog: grid_intelligence
     permissions:
       - user_name: santannajp@gmail.com
         level: CAN_MANAGE

@@ -1,0 +1,17 @@
+resources:
+  pipelines:
+    grid_bronze:
+      name: grid_intelligence_bronze
+      catalog: ${var.catalog}
+      schema: ${resources.schemas.bronze.name}
+      serverless: true
+      continuous: false
+      channel: CURRENT
+      configuration:
+        catalogo: ${var.catalog}
+        schema_bronze: ${resources.schemas.bronze.name}
+        volume_landing: /Volumes/${var.catalog}/${resources.schemas.raw.name}/${resources.volumes.landing.name}
+        duracao_minima_interrupcao_min: "3"
+      libraries:
+        - glob:
+            include: ../src/pipelines/grid_intelligence/transformations/**
