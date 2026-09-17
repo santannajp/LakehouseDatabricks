@@ -106,6 +106,55 @@ tests/
 O PRD em `.llm/prd.md` é a fonte de contexto, glossário e regras de negócio para os
 prompts seguintes.
 
+## Do zero ao copiloto
+
+Execute a sequência abaixo na raiz de `grid_intelligence`, sempre informando o perfil:
+
+```bash
+uv sync --dev
+databricks bundle validate --strict -t dev --profile grid_inteligence
+databricks bundle deploy -t dev --profile grid_inteligence
+databricks fs cp -r landing dbfs:/Volumes/grid_dev/raw/landing \
+  --overwrite --profile grid_inteligence
+databricks bundle run sample_job -t dev --profile grid_inteligence
+uv run python scripts/apply_genie_space.py \
+  --profile grid_inteligence \
+  --catalogo grid_dev \
+  --warehouse-id 8561dbb0dd49340a
+```
+
+O job executa a ingestão, o pipeline medalhão, a metric view, a governança e o relatório
+executivo. O parâmetro `usar_ia` é `false` por padrão; para testar a redação com `ai_gen`:
+
+```bash
+databricks bundle run sample_job -t dev --profile grid_inteligence \
+  --params usar_ia=true,regiao=Campinas
+```
+
+O relatório falha explicitamente quando a região não tem movimento no último dia do painel.
+O arquivo `src/notebooks/relatorio_executivo.py` lê apenas Gold. A demonstração técnica em
+`src/sql/demonstracao.sql` contém oito consultas de evidência; as consultas 1, 2 e 5 leem
+Bronze de propósito para provar descarte e anonimização, enquanto o relatório executivo não
+faz isso.
+
+Links do ambiente `dev`:
+
+- [Dashboard operacional](https://dbc-7a6349ec-d685.cloud.databricks.com/sql/dashboardsv3/01f1b2d48635100d82b27c2f884cd507)
+- [Genie — Copiloto de Operações](https://dbc-7a6349ec-d685.cloud.databricks.com/genie/rooms/01f1b2d69afb1f799da6428d57146efa)
+
+## Convenções de pastas
+
+```text
+src/pipelines/   transformações Bronze, Silver e Gold
+src/sql/         governança, metric view e demonstração
+src/notebooks/   relatórios executados pelo job
+src/dashboards/  definições Lakeview versionadas
+src/genie/       definição serializada do Genie
+scripts/         aplicadores idempotentes de recursos sem suporte a bundle
+resources/       recursos Declarative Automation Bundles
+prompts/         especificações funcionais ordenadas
+```
+
 ## Regras que não podem ser quebradas
 
 - bronze não filtra nem corrige dados
@@ -119,6 +168,14 @@ prompts seguintes.
 
 ```bash
 uv sync --dev
+uv run pytest
+uv run ruff check .
+```
+
+Para conferir o bundle depois de editar YAML ou notebook:
+
+```bash
+databricks bundle validate --strict -t dev --profile grid_inteligence
 uv run pytest
 uv run ruff check .
 ```

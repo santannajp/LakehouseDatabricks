@@ -1,44 +1,66 @@
-# A sample job for grid_intelligence.
-
 resources:
   jobs:
     sample_job:
-      name: sample_job
-
-      trigger:
-        # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
-        periodic:
-          interval: 1
-          unit: DAYS
-
-      #email_notifications:
-      #  on_failure:
-      #    - your_email@example.com
+      name: grid_intelligence_medalhao
+      max_concurrent_runs: 1
 
       parameters:
-        - name: catalog
-          default: ${var.catalog}
-        - name: schema
-          default: ${resources.schemas.raw.name}
+        - name: regiao
+          default: Campinas
+        - name: usar_ia
+          default: "false"
 
       tasks:
-        - task_key: python_wheel_task
-          python_wheel_task:
-            package_name: grid_intelligence
-            entry_point: main
+        - task_key: remover_mascara_dado_pessoal
+          sql_task:
+            file:
+              path: ../src/sql/remover_mascara_dado_pessoal.sql
+              source: WORKSPACE
             parameters:
-              - "--catalog"
-              - "${var.catalog}"
-              - "--schema"
-              - "${resources.schemas.raw.name}"
-          environment_key: default
+              catalogo: ${var.catalog}
+              schema_bronze: ${resources.schemas.bronze.name}
+            warehouse_id: ${var.warehouse_id}
 
-      environments:
-        - environment_key: default
-          spec:
-            environment_version: "4"
-            dependencies:
-              # By default we just include the .whl file generated for the grid_intelligence package.
-              # See https://docs.databricks.com/dev-tools/bundles/library-dependencies.html
-              # for more information on how to add other libraries.
-              - ../dist/*.whl
+        - task_key: pipeline_medalhao
+          depends_on:
+            - task_key: remover_mascara_dado_pessoal
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.grid_bronze.id}
+            full_refresh: true
+
+        - task_key: metric_view_continuidade
+          depends_on:
+            - task_key: pipeline_medalhao
+          sql_task:
+            file:
+              path: ../src/sql/metric_view_continuidade.sql
+              source: WORKSPACE
+            parameters:
+              catalogo: ${var.catalog}
+              schema_gold: ${resources.schemas.gold.name}
+            warehouse_id: ${var.warehouse_id}
+
+        - task_key: governanca_dado_pessoal
+          depends_on:
+            - task_key: pipeline_medalhao
+          sql_task:
+            file:
+              path: ../src/sql/governanca_dado_pessoal.sql
+              source: WORKSPACE
+            parameters:
+              catalogo: ${var.catalog}
+              schema_bronze: ${resources.schemas.bronze.name}
+            warehouse_id: ${var.warehouse_id}
+
+        - task_key: relatorio_executivo
+          depends_on:
+            - task_key: metric_view_continuidade
+            - task_key: governanca_dado_pessoal
+          notebook_task:
+            notebook_path: ../src/notebooks/relatorio_executivo.py
+            source: WORKSPACE
+            base_parameters:
+              catalogo: ${var.catalog}
+              schema_gold: ${resources.schemas.gold.name}
+              regiao: "{{job.parameters.regiao}}"
+              usar_ia: "{{job.parameters.usar_ia}}"

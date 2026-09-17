@@ -1,0 +1,304 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "10000000000000000000000000000001",
+        "question": [
+          "Resuma o que aconteceu em Campinas nas últimas 24 horas e diga o que precisa de ação hoje"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000002",
+        "question": [
+          "Qual foi o DEC e o FEC de cada conjunto no último mês?"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000003",
+        "question": [
+          "Quais bairros concentram unidades com prioridade alta de inspeção?"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000004",
+        "question": [
+          "Quais clientes estão em risco de abrir reclamação na ouvidoria?"
+        ]
+      },
+      {
+        "id": "10000000000000000000000000000005",
+        "question": [
+          "Quantos chamados com risco à saúde tivemos na última semana, e em quais conjuntos?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "${catalogo}.gold.painel_operacional_dia",
+        "column_configs": [
+          {
+            "column_name": "acao_recomendada",
+            "description": [
+              "Ação operacional sugerida para o dia, como monitorar ou tratar impacto na rede."
+            ],
+            "synonyms": ["ação", "próximo passo"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "data_evento",
+            "description": ["Dia de referência do resumo operacional."]
+          },
+          {
+            "column_name": "id_conjunto",
+            "description": ["Identificador regulatório do conjunto de distribuição."],
+            "synonyms": ["código do conjunto", "conjunto"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "municipio",
+            "description": ["Município atendido pelo conjunto."],
+            "synonyms": ["cidade", "região"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "nome_conjunto",
+            "description": ["Nome comercial do conjunto regulatório."],
+            "synonyms": ["conjunto", "região operacional"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "qtd_chamados",
+            "description": ["Quantidade de chamados recebidos no conjunto e dia."]
+          },
+          {
+            "column_name": "qtd_chamados_risco_saude",
+            "description": ["Chamados com relato de risco à saúde ou segurança."]
+          },
+          {
+            "column_name": "qtd_mencoes_ouvidoria",
+            "description": ["Chamados com menção a ouvidoria ou reclamação formal."]
+          },
+          {
+            "column_name": "qtd_ucs_prioridade_alta",
+            "description": ["Quantidade de UCs classificadas como prioridade alta de inspeção no conjunto e dia."]
+          },
+          {
+            "column_name": "uc_horas_interrompidas",
+            "description": ["Horas-UC interrompidas: duração multiplicada pelas UCs afetadas."]
+          }
+        ]
+      },
+      {
+        "identifier": "${catalogo}.gold.prioridade_inspecao_uc",
+        "column_configs": [
+          {
+            "column_name": "bairro",
+            "description": ["Bairro da unidade consumidora."],
+            "synonyms": ["localidade", "bairro de inspeção"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "classe_consumo",
+            "description": ["Classe de consumo da UC, como residencial ou comercial."],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "data_referencia",
+            "description": ["Data da avaliação mais recente da UC."]
+          },
+          {
+            "column_name": "id_conjunto",
+            "description": ["Identificador do conjunto ao qual a UC pertence."],
+            "synonyms": ["código do conjunto"]
+          },
+          {
+            "column_name": "id_uc",
+            "description": ["Identificador da unidade consumidora, ou ponto de entrega."]
+          },
+          {
+            "column_name": "motivo_observado",
+            "description": ["Explicação baseada nos sinais e comparações observados para a prioridade."]
+          },
+          {
+            "column_name": "municipio",
+            "description": ["Município da unidade consumidora."],
+            "synonyms": ["cidade", "região"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "nome_conjunto",
+            "description": ["Nome do conjunto regulatório da UC."],
+            "synonyms": ["conjunto"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "prioridade_inspecao",
+            "description": ["Prioridade de visita técnica: alta, média ou baixa; nunca é acusação de fraude ou culpa."],
+            "synonyms": ["prioridade", "fila de inspeção", "visita"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "sinal_violacao_recente",
+            "description": ["Sinal observado no medidor; é evidência operacional e não prova de irregularidade."]
+          }
+        ]
+      },
+      {
+        "identifier": "${catalogo}.gold.saude_cliente",
+        "column_configs": [
+          {
+            "column_name": "bairro",
+            "description": ["Bairro associado ao cliente e seus chamados."],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "id_cliente",
+            "description": ["Identificador do cliente no conjunto Gold; não é identificador de UC."]
+          },
+          {
+            "column_name": "id_conjunto",
+            "description": ["Identificador do conjunto associado ao cliente."],
+            "synonyms": ["código do conjunto"]
+          },
+          {
+            "column_name": "motivo_predominante",
+            "description": ["Motivo mais frequente nos chamados do cliente."],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "municipio",
+            "description": ["Município associado ao cliente."],
+            "synonyms": ["cidade", "região"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "nome_conjunto",
+            "description": ["Nome do conjunto associado ao cliente."],
+            "synonyms": ["conjunto"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "qtd_chamados_risco_saude",
+            "description": ["Quantidade de chamados do cliente com risco à saúde ou segurança."]
+          },
+          {
+            "column_name": "qtd_mencoes_ouvidoria",
+            "description": ["Quantidade de menções a ouvidoria nos chamados do cliente."]
+          },
+          {
+            "column_name": "risco_ouvidoria",
+            "description": ["Classificação de risco de abertura de reclamação na ouvidoria."],
+            "synonyms": ["risco de reclamação", "ouvidoria"],
+            "enable_format_assistance": true,
+            "enable_entity_matching": true
+          },
+          {
+            "column_name": "ultima_fala",
+            "description": ["Última fala do cliente com dados pessoais previamente mascarados."]
+          },
+          {
+            "column_name": "ultimo_chamado_em",
+            "description": ["Data e hora do chamado mais recente do cliente."]
+          }
+        ]
+      }
+    ],
+    "metric_views": [
+      {
+        "identifier": "${catalogo}.gold.continuidade_metricas"
+      }
+    ]
+  },
+  "instructions": {
+    "example_question_sqls": [
+      {
+        "id": "20000000000000000000000000000001",
+        "question": [
+          "Resuma o que aconteceu em Campinas nas últimas 24 horas e diga o que precisa de ação hoje"
+        ],
+        "sql": [
+          "WITH ultimo_dia AS (SELECT MAX(p.data_evento) AS data_evento FROM ${catalogo}.gold.painel_operacional_dia AS p), operacao AS (SELECT p.id_conjunto, p.nome_conjunto, p.municipio, p.data_evento, p.qtd_chamados, p.qtd_chamados_risco_saude, p.qtd_mencoes_ouvidoria, p.acao_recomendada FROM ${catalogo}.gold.painel_operacional_dia AS p INNER JOIN ultimo_dia AS d ON p.data_evento = d.data_evento WHERE LOWER(p.municipio) LIKE '%campinas%'), media_30d AS (SELECT o.id_conjunto, AVG(p.qtd_chamados) AS media_chamados_30d FROM operacao AS o INNER JOIN ${catalogo}.gold.painel_operacional_dia AS p ON p.id_conjunto = o.id_conjunto WHERE p.data_evento BETWEEN DATE_SUB(o.data_evento, 30) AND DATE_SUB(o.data_evento, 1) GROUP BY o.id_conjunto), prioridade AS (SELECT o.id_conjunto, SUM(CASE WHEN pi.prioridade_inspecao = 'alta' THEN 1 ELSE 0 END) AS ucs_prioridade_alta FROM operacao AS o INNER JOIN ${catalogo}.gold.prioridade_inspecao_uc AS pi ON pi.id_conjunto = o.id_conjunto GROUP BY o.id_conjunto), saude AS (SELECT o.id_conjunto, SUM(s.qtd_mencoes_ouvidoria) AS mencoes_ouvidoria, SUM(s.qtd_chamados_risco_saude) AS chamados_risco_saude FROM operacao AS o INNER JOIN ${catalogo}.gold.saude_cliente AS s ON s.id_conjunto = o.id_conjunto GROUP BY o.id_conjunto) SELECT o.nome_conjunto, o.municipio, o.data_evento, o.qtd_chamados, m.media_chamados_30d, o.qtd_chamados_risco_saude, o.qtd_mencoes_ouvidoria, s.chamados_risco_saude, s.mencoes_ouvidoria, p.ucs_prioridade_alta, o.acao_recomendada FROM operacao AS o LEFT JOIN media_30d AS m ON o.id_conjunto = m.id_conjunto LEFT JOIN prioridade AS p ON o.id_conjunto = p.id_conjunto LEFT JOIN saude AS s ON o.id_conjunto = s.id_conjunto ORDER BY o.qtd_chamados_risco_saude DESC, o.qtd_chamados DESC"
+        ],
+        "usage_guidance": [
+          "Use the last movement day in painel_operacional_dia and combine operational, priority and customer-health evidence before stating the recommended action."
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000002",
+        "question": [
+          "Qual foi o DEC e o FEC de cada conjunto no último mês?"
+        ],
+        "sql": [
+          "SELECT cm.`Conjunto` AS conjunto, cm.`Codigo do Conjunto` AS codigo_conjunto, cm.`Municipio` AS municipio, cm.`Mes` AS mes, MEASURE(cm.`DEC`) AS dec_horas, MEASURE(cm.`FEC`) AS fec_eventos FROM ${catalogo}.gold.continuidade_metricas AS cm WHERE cm.`Mes` = (SELECT MAX(cm2.`Mes`) FROM ${catalogo}.gold.continuidade_metricas AS cm2) GROUP BY ALL ORDER BY 3, 1"
+        ],
+        "usage_guidance": [
+          "Use the governed metric view for DEC and FEC. Every measure must use MEASURE and the query must use GROUP BY ALL."
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000003",
+        "question": [
+          "Quais bairros concentram unidades com prioridade alta de inspeção?"
+        ],
+        "sql": [
+          "SELECT pi.bairro, COUNT(*) AS qtd_ucs_prioridade_alta, COUNT(DISTINCT pi.id_conjunto) AS qtd_conjuntos FROM ${catalogo}.gold.prioridade_inspecao_uc AS pi WHERE pi.prioridade_inspecao = 'alta' GROUP BY pi.bairro ORDER BY 2 DESC, 1 LIMIT 20"
+        ],
+        "usage_guidance": [
+          "Interpret priority_inspecao as a visit queue at UC grain, never as a finding of wrongdoing."
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000004",
+        "question": [
+          "Quais clientes estão em risco de abrir reclamação na ouvidoria?"
+        ],
+        "sql": [
+          "SELECT s.id_cliente, s.nome_conjunto, s.municipio, s.bairro, s.qtd_chamados, s.qtd_mencoes_ouvidoria, s.qtd_chamados_risco_saude, s.risco_ouvidoria, s.ultima_fala FROM ${catalogo}.gold.saude_cliente AS s WHERE s.risco_ouvidoria IN ('alto', 'medio') ORDER BY s.qtd_mencoes_ouvidoria DESC, s.qtd_chamados_risco_saude DESC, s.ultimo_chamado_em DESC LIMIT 100"
+        ],
+        "usage_guidance": [
+          "Questions about clients must use saude_cliente, whose grain is one row per client; ultima_fala is already anonymized."
+        ]
+      },
+      {
+        "id": "20000000000000000000000000000005",
+        "question": [
+          "Quantos chamados com risco à saúde tivemos na última semana, e em quais conjuntos?"
+        ],
+        "sql": [
+          "WITH ultimo_dia AS (SELECT MAX(p.data_evento) AS data_evento FROM ${catalogo}.gold.painel_operacional_dia AS p) SELECT p.id_conjunto, p.nome_conjunto, SUM(p.qtd_chamados_risco_saude) AS chamados_risco_saude FROM ${catalogo}.gold.painel_operacional_dia AS p CROSS JOIN ultimo_dia AS d WHERE p.data_evento BETWEEN DATE_SUB(d.data_evento, 6) AND d.data_evento GROUP BY p.id_conjunto, p.nome_conjunto ORDER BY 3 DESC"
+        ],
+        "usage_guidance": [
+          "Interpret last week relative to the latest day with movement in the dataset, not current_date."
+        ]
+      }
+    ],
+    "text_instructions": [
+      {
+        "id": "30000000000000000000000000000001",
+        "content": [
+          "## PURPOSE\n- Responda em português à diretoria sobre continuidade, operação, PNT, inspeção e saúde do cliente na Luz do Vale.\n- Use somente as quatro fontes Gold deste space.",
+          "## DISAMBIGUATION\n- UC é ponto de entrega e não é cliente; perguntas sobre cliente usam saude_cliente e perguntas sobre UC usam prioridade_inspecao_uc.\n- Conjunto é a agregação geográfica regulatória. DEC é duração média sem energia por UC e FEC é frequência média de interrupções por UC.\n- Últimas 24 horas e última semana significam períodos ancorados no último dia com movimento em painel_operacional_dia, não current_date().",
+          "## DATA QUALITY NOTES\n- Os dados são sintéticos e podem estar defasados em relação ao relógio atual.\n- ultima_fala já está mascarada; não tente recuperar nomes, CPF, telefone ou outros dados pessoais.",
+          "## CONSTRAINTS\n- Não consulte Bronze ou Silver e não exponha dados pessoais.\n- continuidade_metricas é a fonte oficial de DEC/FEC: toda medida deve usar MEASURE(`Nome`) e a consulta deve terminar com GROUP BY ALL. Nunca recalcule DEC ou FEC a partir de outra fonte.\n- prioridade_inspecao_uc produz prioridade de inspeção alta, média ou baixa; nunca chame uma UC de fraude, furto, roubo, irregularidade ou culpada. Sinal no medidor é evidência operacional, não prova.",
+          "## Instructions you must follow when providing summaries\n- Investigue nesta ordem: localize dia e conjunto no painel; compare chamados com a média dos 30 dias anteriores; destaque risco à saúde e ouvidoria; consulte o efeito mensal na metric view; termine com acao_recomendada.\n- Explique a fonte e o período, diferencie cliente de UC e deixe claro que prioridade de inspeção não é acusação."
+        ]
+      }
+    ]
+  }
+}

@@ -19,6 +19,8 @@ artifacts:
 variables:
   catalog:
     description: The catalog to use
+  warehouse_id:
+    description: SQL warehouse used by the metric view and governance tasks
 
 targets:
   dev:
@@ -32,6 +34,7 @@ targets:
       host: https://dbc-7a6349ec-d685.cloud.databricks.com
     variables:
       catalog: grid_dev
+      warehouse_id: 8561dbb0dd49340a
   prod:
     mode: production
     workspace:
@@ -40,6 +43,7 @@ targets:
       root_path: /Workspace/Users/santannajp@gmail.com/.bundle/${bundle.name}/${bundle.target}
     variables:
       catalog: grid_intelligence
+      warehouse_id: 8561dbb0dd49340a
     permissions:
       - user_name: santannajp@gmail.com
         level: CAN_MANAGE

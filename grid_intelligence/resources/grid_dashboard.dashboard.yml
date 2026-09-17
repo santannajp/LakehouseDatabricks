@@ -1,0 +1,8 @@
+resources:
+  dashboards:
+    grid_intelligence_dashboard:
+      display_name: grid_intelligence_operacao
+      file_path: ../src/dashboards/grid_intelligence.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      dataset_catalog: ${var.catalog}
+      dataset_schema: ${resources.schemas.gold.name}
